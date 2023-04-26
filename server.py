@@ -12,7 +12,7 @@ db = SQLAlchemy(app)
 
 
 class App(db.Model):
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(80), nullable=False)
     desc = db.Column(db.String(200), nullable=False)
     icon = db.Column(db.String(200), nullable=False)
@@ -26,6 +26,7 @@ class App(db.Model):
     releaseTime = db.Column(db.String(20), nullable=False)
     editUrl = db.Column(db.String(200), unique=True, nullable=False)
     permitted = db.Column(db.Integer, primary_key=True)
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -51,23 +52,28 @@ def upload():
         os.mkdir('data'+os.sep+request.form['packageName'])
     if 'icon' in request.files:
         icon_filename = request.form['packageName']+os.sep+"icon.png"
-        icon_file.save(os.path.join(app.config['UPLOAD_FOLDER'], icon_filename))
+        icon_file.save(os.path.join(
+            app.config['UPLOAD_FOLDER'], icon_filename))
     else:
         icon_filename = "default_icon.png"
-    hap_filename = request.form['packageName']+os.sep+request.form["name"]+"-"+request.form['version']+".hap"
+    hap_filename = request.form['packageName']+os.sep + request.form["name"]+"-"+request.form['version']+".hap"
     hap_file.save(os.path.join(app.config['UPLOAD_FOLDER'], hap_filename))
     # save the files to the upload folder with secure names
-    
+
     # create a new app object with the data from the request and the files
     app_data = App(
-        id = len(App.query.all())+1,
+        id=len(App.query.all())+1,
         name=request.form['name'],
         desc=request.form['desc'],
-        icon="/"+os.path.join(app.config['UPLOAD_FOLDER'], icon_filename).replace("\\","/"),
+        icon="/" +
+        os.path.join(app.config['UPLOAD_FOLDER'],
+                     icon_filename).replace("\\", "/"),
         vender=request.form['vender'],
         packageName=request.form['packageName'],
         version=request.form['version'],
-        hapUrl="/"+os.path.join(app.config['UPLOAD_FOLDER'], hap_filename).replace("\\","/"),
+        hapUrl="/" +
+        os.path.join(app.config['UPLOAD_FOLDER'],
+                     hap_filename).replace("\\", "/"),
         type=request.form['type'],
         tags=request.form['tags'],
         openSourceAddress=request.form['openSourceAddress'],
@@ -120,34 +126,39 @@ def edit(edit_url):
                 app_data.openSourceAddress = request.form['openSourceAddress']
             if 'releaseTime' in request.form:
                 app_data.releaseTime = request.form['releaseTime']
-
-        # check if the request has new icon or hap files to update
-        if 'icon' in request.files or 'hap' in request.files:
-            # delete the old files from the upload folder
+        if 'icon' in request.files:
             os.remove(app_data.icon)
-            os.remove(app_data.hapUrl)
-
-            # get the new files from the request
             icon_file = request.files['icon']
+            if icon_file.filename == '':
+                abort(400, 'No selected file')
+            icon_filename = secure_filename(icon_file.filename)
+            icon_file.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], icon_filename))
+            app_data.icon = "/"+os.path.join(
+                app.config['UPLOAD_FOLDER'], icon_filename).replace("\\", "/")
+        # check if the request has new icon or hap files to update
+        if 'hap' in request.files:
+            # delete the old files from the upload folder
+
+            # os.remove(app_data.hapUrl)
+            
+            # get the new files from the request
+
             hap_file = request.files['hap']
 
             # check if the files have valid names
-            if icon_file.filename == '' or hap_file.filename == '':
+            if hap_file.filename == '':
                 abort(400, 'No selected file')
 
             # save the new files to the upload folder with secure names
-            icon_filename = secure_filename(icon_file.filename)
-            hap_filename = secure_filename(hap_file.filename)
-            icon_file.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], icon_filename))
-            hap_file.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], hap_filename))
+
+            hap_filename = request.form['packageName']+os.sep + request.form["name"]+"-"+request.form['version']+".hap"
+            hap_file.save(os.path.join(app.config['UPLOAD_FOLDER'], hap_filename))
 
             # update the app data with the new file paths
-            app_data.icon = "/"+os.path.join(
-                app.config['UPLOAD_FOLDER'], icon_filename).replace("\\","/")
+
             app_data.hapUrl = "/"+os.path.join(
-                app.config['UPLOAD_FOLDER'], hap_filename).replace("\\","/")
+                app.config['UPLOAD_FOLDER'], hap_filename).replace("\\", "/")
 
         # commit the changes to the database
         db.session.commit()
@@ -155,10 +166,13 @@ def edit(edit_url):
         # return a success message
         return jsonify({'message': 'App updated successfully'})
 
+
 @app.route('/homePageData')
 @app.route('/homePageData.json')
 def homepageData():
-    return jsonify({"showAnnouncement":True,"announcement":"- Backend server beta 0.0.1\n- Internal Beta\n- Testing Purposes Only"})
+    return jsonify({"showAnnouncement": True, "announcement": "- Backend server beta 0.0.1\n- Internal Beta\n- Testing Purposes Only"})
+
+
 @app.route('/allAppList')
 @app.route('/allAppList.json')
 def allApps():
@@ -173,10 +187,11 @@ def allApps():
     # return the list as json
     return jsonify(apps_list)
 
-@app.route('/unpermitted',methods=['POST'])
+
+@app.route('/unpermitted', methods=['POST'])
 def unpermitted():
     try:
-        if request.form["password"] == os.environ("ADMIN_PASSWORD"):
+        if request.form["password"] == os.environ["ADMIN_PASSWORD"]:
             # query all apps(unpermitted) from the database
             apps = App.query.filter_by(permitted=0)
 
@@ -188,36 +203,42 @@ def unpermitted():
             return jsonify(apps_list)
         else:
             abort(404)
-    except:
+    except Exception as e:
         abort(404)
-    
-@app.route('/admin/permit',methods=['POST'])
+
+
+@app.route('/admin/permit', methods=['POST'])
 def permit():
     try:
-        if request.form["password"] == os.environ("ADMIN_PASSWORD"):
+        if request.form["password"] == os.environ["ADMIN_PASSWORD"]:
             if "appID" not in request.form:
-                abort(400,'Missing appID')
+                abort(400, 'Missing appID')
             else:
-                app_data = App.query.filter_by(id=request.formappID).first()
+                app_data = App.query.filter_by(id=request.form["appID"]).first()
                 if not app_data:
-                    abort(404,'App not found')
+                    abort(404, 'App not found')
                 else:
                     app_data.permitted = 1
                     db.session.commit()
+                    return {"message":'ok'}
         else:
             abort(404)
     except:
         abort(404)
+
+
 @app.route('/data/default_icon.png')
 def png():
     abort(404)
 
+
 @app.route('/data/<pkg>/<file>')
-def get(pkg,file):
+def get(pkg, file):
     try:
         return send_file("data"+os.sep+pkg+os.sep+file)
     except:
         abort(404)
 
+
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
