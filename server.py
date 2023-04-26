@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, abort, redirect
+from flask import Flask, request, jsonify, abort, redirect, send_file
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -7,12 +7,12 @@ import uuid
 from dotenv import load_dotenv
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///apps.db'
-app.config['UPLOAD_FOLDER'] = '/data'
+app.config['UPLOAD_FOLDER'] = 'data'
 db = SQLAlchemy(app)
 
 
 class App(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     name = db.Column(db.String(80), nullable=False)
     desc = db.Column(db.String(200), nullable=False)
     icon = db.Column(db.String(200), nullable=False)
@@ -38,30 +38,36 @@ def upload():
         abort(400, 'Missing icon or hap file')
 
     # get the icon and hap files from the request
-    icon_file = request.files['icon']
+    if 'icon' in request.files:
+        icon_file = request.files['icon']
+    else:
+        icon_file = ""
     hap_file = request.files['hap']
 
     # check if the files have valid names
-    if icon_file.filename == '' or hap_file.filename == '':
+    if hap_file.filename == '':
         abort(400, 'No selected file')
+    if not os.path.exists('data'+os.sep+request.form['packageName']):
+        os.mkdir('data'+os.sep+request.form['packageName'])
     if 'icon' in request.files:
         icon_filename = request.form['packageName']+os.sep+"icon.png"
         icon_file.save(os.path.join(app.config['UPLOAD_FOLDER'], icon_filename))
     else:
-        icon_filename = os.path.join(app.config['UPLOAD_FOLDER'], "default_icon.png")
-    hap_filename = request.form['packageName']+os.sep+"-"+request.form["name"]+request.form['version']+".hap"
+        icon_filename = "default_icon.png"
+    hap_filename = request.form['packageName']+os.sep+request.form["name"]+"-"+request.form['version']+".hap"
     hap_file.save(os.path.join(app.config['UPLOAD_FOLDER'], hap_filename))
     # save the files to the upload folder with secure names
     
     # create a new app object with the data from the request and the files
     app_data = App(
+        id = len(App.query.all())+1,
         name=request.form['name'],
         desc=request.form['desc'],
-        icon=os.path.join(app.config['UPLOAD_FOLDER'], icon_filename),
+        icon="/"+os.path.join(app.config['UPLOAD_FOLDER'], icon_filename).replace("\\","/"),
         vender=request.form['vender'],
         packageName=request.form['packageName'],
         version=request.form['version'],
-        hapUrl=os.path.join(app.config['UPLOAD_FOLDER'], hap_filename),
+        hapUrl="/"+os.path.join(app.config['UPLOAD_FOLDER'], hap_filename).replace("\\","/"),
         type=request.form['type'],
         tags=request.form['tags'],
         openSourceAddress=request.form['openSourceAddress'],
@@ -138,10 +144,10 @@ def edit(edit_url):
                 app.config['UPLOAD_FOLDER'], hap_filename))
 
             # update the app data with the new file paths
-            app_data.icon = os.path.join(
-                app.config['UPLOAD_FOLDER'], icon_filename)
-            app_data.hapUrl = os.path.join(
-                app.config['UPLOAD_FOLDER'], hap_filename)
+            app_data.icon = "/"+os.path.join(
+                app.config['UPLOAD_FOLDER'], icon_filename).replace("\\","/")
+            app_data.hapUrl = "/"+os.path.join(
+                app.config['UPLOAD_FOLDER'], hap_filename).replace("\\","/")
 
         # commit the changes to the database
         db.session.commit()
@@ -161,7 +167,9 @@ def allApps():
 
     # convert each app object to a dictionary and store them in a list
     apps_list = [app.__dict__ for app in apps]
-
+    apps = []
+    for dicts in apps_list:
+        dicts.pop('_sa_instance_state')
     # return the list as json
     return jsonify(apps_list)
 
@@ -174,7 +182,8 @@ def unpermitted():
 
             # convert each app object to a dictionary and store them in a list
             apps_list = [app.__dict__ for app in apps]
-
+            for dicts in apps_list:
+                dicts.pop('_sa_instance_state')
             # return the list as json
             return jsonify(apps_list)
         else:
@@ -199,7 +208,16 @@ def permit():
             abort(404)
     except:
         abort(404)
+@app.route('/data/default_icon.png')
+def png():
+    abort(404)
 
+@app.route('/data/<pkg>/<file>')
+def get(pkg,file):
+    try:
+        return send_file("data"+os.sep+pkg+os.sep+file)
+    except:
+        abort(404)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
