@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}应用{% endblock %}
+{% block body %}
+<div class="content">
+    <img src="/static/favicon.ico" width="140" height="140">
+    <br>
+    <br>
+    <h3>F-OH</h3>
+    <h4>服务器版本: 1.0.0</h4>
+    <br>
+    <div class="rounded-info">
+        <h5>应用简介</h5>
+        <p>OpenHarmony自由开源软件的应用中心</p>
+    </div>
+    <div class="rounded-info">
+        <h5>服务器作者</h5>
+        <p><a href="https://github.com/MeowTechOpenSource">MeowTechOpenSource(Github)</a> | <a href="https://gitee.com/myyauyau">myyauyau(Gitee)</a></p>
+    </div>
+    <div class="rounded-info">
+        <h5>开源仓库</h5>
+        <a href="https://gitee.com/ohos-dev/F-OH-Server">https://gitee.com/ohos-dev/F-OH-Server</a>
+    </div>
+    <div class="rounded-info">
+        <h5>开源社区</h5>
+        <a href="https://gitee.com/ohos-dev/">https://gitee.com/ohos-dev/</a>
+    </div>
+    <div class="rounded-info">
+        <h5>开源社区交流群</h5>
+        <p>752399947</p>
+    </div>
+</div>
+<style>
+    body{
+        background-color: #f1f3f5;
+    }
+    .content {
+        margin: 5px;
+        text-align: center;
+    }
+
+    .slideshow {
+        height: 20%;
+    }
+
+    .appInfo {
+        background-image: url('/static/main_card_1.jpg');
+        border-radius: 20px;
+        margin: 10px;
+        text-align: center;
+    }
+
+    .appList {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .rounded-info{
+        background-color: white;
+        margin: 5px;
+        border-radius: 15px;
+        text-align: left;
+        padding: 10px;
+    }
+</style>
+{% endblock %}

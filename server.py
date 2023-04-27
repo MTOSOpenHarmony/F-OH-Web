@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, abort, redirect, send_file
+from flask import Flask, request, jsonify, abort, redirect, send_file, url_for, render_template, Markup, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///apps.db'
 app.config['UPLOAD_FOLDER'] = 'data'
 db = SQLAlchemy(app)
-
+homepageDataCfg = {"showAnnouncement": True, "announcement": "- Backend server beta 0.0.1\n- Internal Beta\n- Testing Purposes Only"}
 
 class App(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -27,7 +27,9 @@ class App(db.Model):
     editUrl = db.Column(db.String(200), unique=True, nullable=False)
     permitted = db.Column(db.Integer, primary_key=True)
 
-
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('static/favicon.ico')
 @app.route('/upload', methods=['POST'])
 def upload():
     # check if the request has all the required fields
@@ -56,7 +58,8 @@ def upload():
             app.config['UPLOAD_FOLDER'], icon_filename))
     else:
         icon_filename = "default_icon.png"
-    hap_filename = request.form['packageName']+os.sep + request.form["name"]+"-"+request.form['version']+".hap"
+    hap_filename = request.form['packageName']+os.sep + \
+        request.form["name"]+"-"+request.form['version']+".hap"
     hap_file.save(os.path.join(app.config['UPLOAD_FOLDER'], hap_filename))
     # save the files to the upload folder with secure names
 
@@ -141,7 +144,7 @@ def edit(edit_url):
             # delete the old files from the upload folder
 
             # os.remove(app_data.hapUrl)
-            
+
             # get the new files from the request
 
             hap_file = request.files['hap']
@@ -152,8 +155,10 @@ def edit(edit_url):
 
             # save the new files to the upload folder with secure names
 
-            hap_filename = request.form['packageName']+os.sep + request.form["name"]+"-"+request.form['version']+".hap"
-            hap_file.save(os.path.join(app.config['UPLOAD_FOLDER'], hap_filename))
+            hap_filename = request.form['packageName']+os.sep + \
+                request.form["name"]+"-"+request.form['version']+".hap"
+            hap_file.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], hap_filename))
 
             # update the app data with the new file paths
 
@@ -170,7 +175,7 @@ def edit(edit_url):
 @app.route('/homePageData')
 @app.route('/homePageData.json')
 def homepageData():
-    return jsonify({"showAnnouncement": True, "announcement": "- Backend server beta 0.0.1\n- Internal Beta\n- Testing Purposes Only"})
+    return jsonify(homepageDataCfg)
 
 
 @app.route('/allAppList')
@@ -183,6 +188,7 @@ def allApps():
     apps_list = [app.__dict__ for app in apps]
     apps = []
     for dicts in apps_list:
+        dicts.pop('editUrl')
         dicts.pop('_sa_instance_state')
     # return the list as json
     return jsonify(apps_list)
@@ -198,6 +204,7 @@ def unpermitted():
             # convert each app object to a dictionary and store them in a list
             apps_list = [app.__dict__ for app in apps]
             for dicts in apps_list:
+                dicts.pop('editUrl')
                 dicts.pop('_sa_instance_state')
             # return the list as json
             return jsonify(apps_list)
@@ -214,13 +221,14 @@ def permit():
             if "appID" not in request.form:
                 abort(400, 'Missing appID')
             else:
-                app_data = App.query.filter_by(id=request.form["appID"]).first()
+                app_data = App.query.filter_by(
+                    id=request.form["appID"]).first()
                 if not app_data:
                     abort(404, 'App not found')
                 else:
                     app_data.permitted = 1
                     db.session.commit()
-                    return {"message":'ok'}
+                    return {"message": 'ok'}
         else:
             abort(404)
     except:
@@ -229,7 +237,7 @@ def permit():
 
 @app.route('/data/default_icon.png')
 def png():
-    abort(404)
+    return send_file('static/default_icon.png')
 
 
 @app.route('/data/<pkg>/<file>')
@@ -238,7 +246,50 @@ def get(pkg, file):
         return send_file("data"+os.sep+pkg+os.sep+file)
     except:
         abort(404)
+def appCount():
+    # query all apps(permitted) from the database
+    apps = App.query.filter_by(permitted=1)
+
+    # convert each app object to a dictionary and store them in a list
+    apps_list = [app.__dict__ for app in apps]
+    apps = []
+    games = 0
+    apps = 0
+    all = 0
+    for dicts in apps_list:
+        all+=1
+        if dicts['type'] == 'app':
+            apps+=1
+        else:
+            games+=1
+    return [all,apps,games]
+    
+def getApps():
+    # query all apps(permitted) from the database
+    apps = App.query.filter_by(permitted=1)
+
+    # convert each app object to a dictionary and store them in a list
+    apps_list = [app.__dict__ for app in apps]
+    apps = []
+    for dicts in apps_list:
+        dicts.pop('editUrl')
+        dicts.pop('_sa_instance_state')
+    # return the list as json
+    return apps_list
+@app.route('/')
+def home():
+    return render_template('home.html',data=homepageDataCfg,appcount=appCount())
+@app.route('/apps')
+def apps():
+    return render_template('appslist.html',apps=getApps(),type='app')
+
+@app.route('/games')
+def games():
+    return render_template('appslist.html',apps=getApps(),type='game')
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
