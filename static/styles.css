@@ -1,0 +1,84 @@
+/*
+Copyright 2022 (c) Meow Tech Open Source, All rights reserved
+
+About this css library/wrapper:
+HarmonyOS Design Language HTML Design Library 
+This is a Bootstrap 5.1 wrapper/overlay and MUST BE USED WITH BOOTSTRAP 5.1!
+Mimick the design of the HarmonyOS Stock Apps.
+Based On Sunflower -  Mobile PWA Edition
+*/
+html{
+    /* background-color:#F1F3F5; */
+}
+body{
+    /* background-color:#F1F3F5; */
+    font-family: "HarmonyOS Sans TC";
+    background-color: #f1f3f5;
+}
+
+.demo-logo{
+    margin-bottom:20vh;
+    border: 1px solid #707070;
+    color:black;
+    background-color:white;
+    height:138px;
+    width:138px;
+    border-radius: 31px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+input,textarea{
+    margin-bottom: 3.25vh;
+    border-radius: 20px !important;
+}
+textarea{
+    padding: 12px 20px;
+}
+.btn-primary{
+    border-radius: 25px;
+}
+.btn:focus, .btn:active {
+    outline: none;
+    box-shadow: none !important;
+}
+.btn:active, .btn:focus{
+    transition: .25s linear outline-color;
+    outline-style: solid !important;
+    outline-color: #254FF7 !important;
+    outline-offset:2px !important;
+    outline-width:medium !important;
+}
+.form-control{
+    border:none !important;
+}
+.form-control:focus, .form-control:active {
+    outline: none;
+    box-shadow: none !important;
+}
+.form-control:active, .form-control:focus{
+    transition: .05s linear;
+    outline-style: solid !important;
+    outline-color: #254FF7 !important;
+    outline-offset:-1px !important;
+    outline-width:medium !important;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(0, 0, 0, 0.6);;
+}
+::selection{
+    background-color:#cedffd;
+}
+.w-good{
+    width:92%!important
+}
+*{
+    caret-color: #0A59F7;
+}
+body {
+}
+.toast{
+    border-radius: 2rem !important;
+    bottom:2%;
+}

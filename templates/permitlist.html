@@ -1,0 +1,69 @@
+{% extends "admin.html" %}
+{% block title %}审核应用{% endblock %}
+{% block body %}
+<div class="content">
+    <h2>审核应用</h2>
+    <br>
+    <br>
+    <h2>待审核</h2>
+    <div>
+        {% for app in apps %}
+
+        <div class="appList">
+            <div>
+                <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60">
+            </div>
+            <div style="margin-left:10px">
+                <h5>{{app["name"]}}</h5>
+                <h6>{{app["desc"]}}</h6>
+            </div>
+            <div style="position:absolute;right:20px;">
+                <a href="/admin/info/{{app['id']}}" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+        <div style="height:2px;background-color:grey;margin:5px;"></div>
+        {% endfor %}
+    </div>
+    <br>
+    <h2>审核通过</h2>
+    <div>
+        {% for app in apps2 %}
+
+        <div class="appList">
+            <div>
+                <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60">
+            </div>
+            <div style="margin-left:10px">
+                <h5>{{app["name"]}}</h5>
+                <h6>{{app["desc"]}}</h6>
+            </div>
+            <div style="position:absolute;right:20px;">
+                <a href="/admin/info/{{app['id']}}" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+        <div style="height:2px;background-color:grey;margin:5px;"></div>
+        {% endfor %}
+    </div>
+</div>
+<style>
+    .content {
+        margin: 5px;
+    }
+
+    .slideshow {
+        height: 20%;
+    }
+
+    .appInfo {
+        background-image: url('/static/main_card_1.jpg');
+        border-radius: 20px;
+        margin: 10px;
+        text-align: center;
+    }
+
+    .appList {
+        display: flex;
+        justify-content: flex-start;
+    }
+</style>
+{% endblock %}

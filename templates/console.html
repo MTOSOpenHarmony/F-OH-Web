@@ -11,15 +11,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
-    <title>{% block title %}{% endblock %} - F-OH</title>
+    <title>{% block title %}{% endblock %} - F-OH Console</title>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="/console/home">
                 <img src="/static/favicon.ico" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                F-OH
+                F-OH Console
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,15 +27,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="/">主页</a>
-                    <a class="nav-link" href="/apps">应用</a>
-                    <a class="nav-link" href="/games">游戏</a>
-                    <a class="nav-link" href="/console/home">Console</a>
-                    <a class="nav-link" href="/admin/home">Admin</a>
+                    <a class="nav-link" href="/console/home">我的应用</a>
                     <a class="nav-link" href="/about">关于</a>
+                    <div class="d-flex">
+
+                        {% if current_user.is_authenticated %}
+                            <a href="/console/logout" class="btn btn-primary">登出</a>
+                        {% else %}
+                            <a href="/login" class="btn btn-primary">登陆/注册</a>
+                        {% endif %}
+        
+                    </div>
                 </div>
             </div>
+            
         </div>
+        
     </nav>
     <div class="content">
         <div aria-live="polite" aria-atomic="true" class="position-relative">

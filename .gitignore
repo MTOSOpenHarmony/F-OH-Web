@@ -2,3 +2,4 @@
 apps.db
 data/
 apps.db
+__pycache__/hashing.cpython-310.pyc

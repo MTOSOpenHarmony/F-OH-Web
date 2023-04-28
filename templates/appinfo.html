@@ -1,0 +1,66 @@
+{% extends "admin.html" %}
+{% block title %}应用详情{% endblock %}
+{% block body %}
+<div class="style">
+    <h2>应用详情</h2>
+    <div class="mb-3">
+        <label for="name" class="form-label">名称</label>
+        <p>{{s['name']}}</p>
+    </div>
+    <div>
+        <label for="desc" class="form-label">描述</label>
+        <p>{{s['desc']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="vender" class="form-label">作者</label>
+        <p>{{s['vender']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="packageName" class="form-label">包名</label>
+        <p>{{s['packageName']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="version" class="form-label">版本</label>
+        <p>{{s['version']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="type" class="form-label">类型</label>
+        <select class="form-select" id="type" name="type" value="{{s['type']}}" disabled>
+            <option value="app">应用</option>
+            <option value="game">游戏</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="tags" class="form-label">标签</label>
+        <p>{{s['tags']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="openSourceAddress" class="form-label">开源地址</label>
+        <p>{{s['openSourceAddress']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="releaseTime" class="form-label">发布时间</label>
+        <p>{{s['releaseTime']}}</p>
+    </div>
+    <div class="mb-3">
+        <label for="icon" class="form-label">图标</label>
+        <br>
+        <img src="{{s['icon']}}" alt="AppIcon" width="60" height="60">
+    </div>
+    <div class="mb-3">
+        <label for="hap" class="form-label" accept=".hap">HAP</label>
+        <a class="btn btn-primary" href="{{s['hapUrl']}}">下载</a>
+    </div>
+    {% if s['permitted'] == 0 %}
+        <a class="btn btn-success" href="/admin/permit/{{s['id']}}">审核V</a>
+    {% else %}
+        <a class="btn btn-danger" href="/admin/permit/{{s['id']}}">审核X</a>
+    {% endif %}
+
+</div>
+<style>
+    .content {
+        margin: 5px;
+    }
+</style>
+{% endblock %}
