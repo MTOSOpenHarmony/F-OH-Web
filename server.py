@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = 'data'
 db = SQLAlchemy(app)
 app.secret_key = "ABCDEFGOH-F"
 homepageDataCfg = {"showAnnouncement": True,
-                   "announcement": "- Backend server beta 0.0.1\n- Internal Beta\n- Testing Purposes Only"}
+                   "announcement": "- F-OH Backend Beta"}
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
