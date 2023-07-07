@@ -1,5 +1,3 @@
-#Hashing Extention Second Edition v1.0
-#Reimplemented All Features
 import hashlib
 class Hashing:
     #def __init__(self,salt):
