@@ -1,0 +1,51 @@
+{% extends "console.html" %}
+{% block title %}Releases{% endblock %}
+{% block body %}
+<div class="content">
+    <h2>Releases</h2>
+    <br>
+    <a class="btn btn-primary" href="/console/releases/new/{{url}}">Add Release</a>
+    <br>
+    <div>
+        {% for rel in releases %}
+            <div class="appList">
+                    <div style="margin-left:10px">
+                        <h5>v{{rel["version"]}}({{rel["verCode"]}})</h5>
+                        <h6>MinAPI: {{rel["minimumAPI"]}}</h6>
+                        <h6>{{rel["releaseTime"]}}</h6>
+                        <h6>{{rel["deviceType"]}} {{rel["archType"]}}</h6>
+                        <h6>{{rel["changeLog"]}}</h6>
+                        
+                        <a class="btn btn-primary" href="/console/releases/{{url}}/edit/{{rel["id"]}}">Edit Releases</a>
+                    </div>
+                    
+                </div>
+                <!-- <div style="height:2px;background-color:grey;margin:5px;"></div> -->
+        {% endfor %}
+    </div>
+</div>
+<style>
+    .content {
+        margin: 5px;
+    }
+
+    .slideshow {
+        height: 20%;
+    }
+
+    .appInfo {
+        background-image: url('/static/main_card_1.jpg');
+        border-radius: 20px;
+        margin: 10px;
+        text-align: center;
+    }
+
+    .appList {
+        display: flex;
+        justify-content: flex-start;
+        border-radius: 15px;
+        background-color: white;
+        padding: 10px;
+    }
+</style>
+{% endblock %}

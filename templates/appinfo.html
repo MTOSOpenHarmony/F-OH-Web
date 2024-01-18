@@ -20,27 +20,16 @@
         <p>{{s['packageName']}}</p>
     </div>
     <div class="mb-3">
-        <label for="version" class="form-label">版本</label>
-        <p>{{s['version']}}</p>
-    </div>
-    <div class="mb-3">
-        <label for="type" class="form-label">类型</label>
-        <select class="form-select" id="type" name="type" value="{{s['type']}}" disabled>
-            <option value="app">应用</option>
-            <option value="game">游戏</option>
-        </select>
+        <label for="version" class="form-label">DownloadCount</label>
+        <p>{{s['downloadCount']}}</p>
     </div>
     <div class="mb-3">
         <label for="tags" class="form-label">标签</label>
         <p>{{s['tags']}}</p>
     </div>
     <div class="mb-3">
-        <label for="openSourceAddress" class="form-label">开源地址</label>
-        <p>{{s['openSourceAddress']}}</p>
-    </div>
-    <div class="mb-3">
-        <label for="releaseTime" class="form-label">发布时间</label>
-        <p>{{s['releaseTime']}}</p>
+        <label for="openSourceAddress" class="form-label">Website</label>
+        <input type="url" class="form-control" value="{{s['website']}}" id="openSourceAddress" name="openSourceAddress" disabled>
     </div>
     <div class="mb-3">
         <label for="icon" class="form-label">图标</label>
@@ -48,15 +37,18 @@
         <img src="{{s['icon']}}" alt="AppIcon" width="60" height="60">
     </div>
     <div class="mb-3">
-        <label for="hap" class="form-label" accept=".hap">HAP</label>
-        <a class="btn btn-primary" href="{{s['hapUrl']}}">下载</a>
+        <label for="icon" class="form-label">Screenshots</label>
+        <div>
+            {% for s in ss %}
+            
+                <div>
+                    <img width=200 height=200 src="{{s}}" alt="AppIcon">
+                    
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    {% if s['permitted'] == 0 %}
-        <a class="btn btn-success" href="/admin/permit/{{s['id']}}">审核V</a>
-    {% else %}
-        <a class="btn btn-danger" href="/admin/permit/{{s['id']}}">审核X</a>
-    {% endif %}
-
+    <a href="/admin/danger/removeapp/{{s['id']}}" class="btn btn-danger">删除</a>
 </div>
 <style>
     .content {

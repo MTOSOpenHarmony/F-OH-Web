@@ -5,7 +5,6 @@
     <h2>审核应用</h2>
     <br>
     <br>
-    <h2>待审核</h2>
     <div>
         {% for app in apps %}
 
@@ -21,27 +20,6 @@
                 <a href="/admin/info/{{app['id']}}" class="btn btn-primary">查看详情</a>
             </div>
         </div>
-        <div style="height:2px;background-color:grey;margin:5px;"></div>
-        {% endfor %}
-    </div>
-    <br>
-    <h2>审核通过</h2>
-    <div>
-        {% for app in apps2 %}
-
-        <div class="appList">
-            <div>
-                <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60">
-            </div>
-            <div style="margin-left:10px">
-                <h5>{{app["name"]}}</h5>
-                <h6>{{app["desc"]}}</h6>
-            </div>
-            <div style="position:absolute;right:20px;">
-                <a href="/admin/info/{{app['id']}}" class="btn btn-primary">查看详情</a>
-            </div>
-        </div>
-        <div style="height:2px;background-color:grey;margin:5px;"></div>
         {% endfor %}
     </div>
 </div>
@@ -64,6 +42,9 @@
     .appList {
         display: flex;
         justify-content: flex-start;
+        border-radius: 15px;
+        background-color: white;
+        padding: 10px;
     }
 </style>
 {% endblock %}

@@ -11,7 +11,11 @@
         </div>
         <div>
             <label for="desc" class="form-label">描述</label>
-            <textarea class="form-control" id="desc" name="desc" required>{{s['desc']}}</textarea>
+            <input type="text" class="form-control" id="desc" name="desc" value="{{s['desc']}}" required>
+        </div>
+        <div>
+            <label for="desc" class="form-label">描述2</label>
+            <textarea class="form-control" id="desc2" name="desc2" required>{{s['maindesc']}}</textarea>
         </div>
         <div class="mb-3">
             <label for="vender" class="form-label">作者</label>
@@ -20,10 +24,6 @@
         <div class="mb-3">
             <label for="packageName" class="form-label">包名</label>
             <input type="text" class="form-control" value="{{s['packageName']}}" disabled>
-        </div>
-        <div class="mb-3">
-            <label for="version" class="form-label">版本</label>
-            <input type="text" class="form-control" value="{{s['version']}}" id="version" name="version" required>
         </div>
         <!-- <div class="mb-3">
             <label for="type" class="form-label">类型</label>
@@ -37,21 +37,30 @@
             <input type="text" class="form-control" id="tags" name="tags">
         </div> -->
         <div class="mb-3">
-            <label for="openSourceAddress" class="form-label">开源地址</label>
-            <input type="url" class="form-control" value="{{s['openSourceAddress']}}" id="openSourceAddress" name="openSourceAddress">
-        </div>
-        <div class="mb-3">
-            <label for="releaseTime" class="form-label">发布时间</label>
-            <input type="datetime-local" value="{{s['releaseTime']}}" class="form-control" id="releaseTime" name="releaseTime" required>
+            <label for="openSourceAddress" class="form-label">Website</label>
+            <input type="url" class="form-control" value="{{s['website']}}" id="openSourceAddress" name="openSourceAddress">
         </div>
         <div class="mb-3">
             <label for="icon" class="form-label">图标</label>
+            <div>
+                <img src="{{s['icon']}}" alt="AppIcon" width="60" height="60">
+            </div>
             <input type="file" class="form-control" id="icon" name="icon">
         </div>
         <div class="mb-3">
-            <label for="hap" class="form-label" accept=".hap">HAP 档案</label>
-            <input type="file" class="form-control" id="hap" name="hap">
+            <label for="icon" class="form-label">Screenshots</label>
+            <div>
+                {% for s in ss %}
+                
+                <div style="width:200px;height: 200px;">
+                    <img src="{{s}}" alt="AppIcon">
+                    <a href="/edit/screenshots/delete/{{s['editUrl']}}/{{loop.index - 1}}">删除</a>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="/edit/screenshots/{{s['id']}}" class="btn btn-primary">Add screenshot</a>
         </div>
+        
         <button type="submit" class="btn btn-primary">提交</button>
     </form>
 </div>

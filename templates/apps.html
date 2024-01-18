@@ -11,17 +11,20 @@
             {% if app["id"] in myApps %}
                 <div class="appList">
                     <div>
-                        <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60">
+                        <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60" style="border-radius: 12px;">
                     </div>
                     <div style="margin-left:10px">
                         <h5>{{app["name"]}}</h5>
-                        <h6>{% if app["permitted"] == 0 %}等待审核{% else %}审核通过{%endif%}</h6>
+                        <!-- <h6>{% if app["permitted"] == 0 %}等待审核{% else %}审核通过{%endif%}</h6> -->
+                    </div>
+                    <div style="position:absolute;right:130px;">
+                        <a href="/console/releases/{{app['id']}}" class="btn btn-primary">Manage Releases</a>
                     </div>
                     <div style="position:absolute;right:20px;">
-                        <a href="/edit2/{{app['id']}}" class="btn btn-primary">编辑/更新</a>
+                        <a href="/edit2/{{app['id']}}" class="btn btn-primary">编辑</a>
                     </div>
                 </div>
-                <div style="height:2px;background-color:grey;margin:5px;"></div>
+                <!-- <div style="height:2px;background-color:grey;margin:5px;"></div> -->
             {% endif %}
         {% endfor %}
     </div>
@@ -45,6 +48,9 @@
     .appList {
         display: flex;
         justify-content: flex-start;
+        border-radius: 15px;
+        background-color: white;
+        padding: 10px;
     }
 </style>
 {% endblock %}

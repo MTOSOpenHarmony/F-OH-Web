@@ -5,21 +5,19 @@
     <h2>{% if type == 'app' %}应用{% else %}游戏{% endif %}</h2>
     <div>
         {% for app in apps %}
-        {% if app['type'] == type %}
         <div class="appList">
             <div>
                 <img src="{{app['icon']}}" alt="AppIcon" width="60" height="60">
             </div>
             <div style="margin-left:10px">
                 <h5>{{app["name"]}}</h5>
-                <p>{{app["desc"]}}</p>
+                <p style="opacity:0.6;">{{app["desc"]}}</p>
+                <p style="opacity:0.6;">{{app["downloadCount"]}} Downloads | 0 Comments | 0.0 Stars</p>
             </div>
             <div style="position:absolute;right:20px;">
                 <a href="{{app['openSourceAddress']}}" class="btn btn-primary">开源地址</a>
             </div>
         </div>
-        <div style="height:2px;background-color:grey;margin:5px;"></div>
-        {% endif %}
         {% endfor %}
     </div>
 </div>
@@ -42,6 +40,12 @@
     .appList {
         display: flex;
         justify-content: flex-start;
+        border-radius: 15px;
+        background-color: white;
+        padding: 10px;
+    }
+    p{
+        margin-bottom: 0;
     }
 </style>
 {% endblock %}

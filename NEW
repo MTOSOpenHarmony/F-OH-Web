@@ -1,0 +1,50 @@
+# New feature
+minimumAPI
+minimumOldVersion
+downloadLatestIfNew
+deviceType
+archType
+changeLog
+comments
+stars
+images
+requiredPerm
+---------------------
+# AppItem
+appReleases
+mainDesc
+# HomeSections
+if not checkReleaseCollision(edit_url, request.form["namec")):
+            ReleaseInfo(
+                version=request.form["name"),
+                hapUrl=request.form["namec"),
+                releaseTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                minimumAPI=request.form["minapi"),
+                minimumOldVersion=request.form["miov"),
+                downloadLatestIfNew=1,
+                deviceType=request.form["devtype"),
+                archType=request.form["archtype"),
+                changeLog=request.form["changelog"),
+                requiredPerm=request.form["perm"),
+                verCode=request.form["namec"),
+                app_id=edit_url,
+            ).save()
+            app_data.appReleases = json.dumps(
+                json.loads(app_data.appReleases)
+                + [
+                    ReleaseInfo.query.filter_by(version=request.form["name"))
+                    .first()
+                    .id
+                ]
+            )
+            app_data.save()
+            decomposePack()
+            return redirect(url_for("ar", edit_url=edit_url))
+        
+        
+        def decomposePack(packdir):
+    with ZipFile(packdir, 'r') as inzipfile:
+        for infile in (name for name in inzipfile.namelist() if name[-1] != '/'):
+            if 'module.json' in os.path.split(infile):
+                packinfo = json.loads(inzipfile.open(infile,'r').read())
+    print(packinfo)
